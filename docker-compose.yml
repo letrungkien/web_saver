@@ -1,0 +1,14 @@
+version: '2'
+services:
+  app:
+    stdin_open: true
+    tty: true
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    volumes:
+      - .:/app
+  chrome:
+    image: selenium/standalone-chrome
+    ports:
+      - '4444:4444'

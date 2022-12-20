@@ -1,0 +1,49 @@
+#! /usr/bin/env ruby
+
+require 'optparse'
+require 'uri'
+require './lib/web_saver.rb'
+
+web_saver = WebSaver.new
+options = { fetch: true }
+
+# Collect user's option flags
+OptionParser.new do |opts|
+  opts.banner = "Usage: ./fetch [flag] url..."
+
+  opts.on("-m", "--metadata", "Display saved metadata") do
+    options[:display_metadata] = true
+    options[:fetch] = false
+  end
+
+  opts.on("-h", "--help", "Display usage information") do
+    options[:fetch] = false
+    options[:display_help] = true
+    puts opts
+  end
+end.parse!
+
+# Colect and validate user's input
+if ARGV.count < 1 && !options[:display_help]
+  puts 'Please provide at least 1 url'
+  exit 1
+end
+
+ARGV.each do |url|
+  unless url =~ URI::regexp
+    puts "#{url} is not a valid url, try something else, e.g. https://www.google.com"
+    next
+  end
+
+  # Perform action based on collected user's input
+  if options[:fetch]
+    web_saver.fetch_webpage_and_save_assets_with_metadata(url)
+  elsif options[:display_metadata]
+    web_saver.fetch_metadata(url)
+  end
+rescue => e
+  puts "Encounter an error: #{e}"
+  puts e.backtrace
+ensure
+  web_saver.quit_driver rescue nil
+end
