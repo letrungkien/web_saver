@@ -16,9 +16,7 @@ class AssetsDownloader
 
       destination_file_name = "#{assets_directory}/#{Digest::MD5.hexdigest(src_full_url)}#{file_extension}"
 
-      thread = Thread.new { Down.download(src_full_url, destination: destination_file_name) }
-      thread.abort_on_exception = true
-      thread.report_on_exception = false
+      Down.download(src_full_url, destination: destination_file_name)
 
       assets_map[src_full_url] =  "./#{destination_file_name}"
     end
