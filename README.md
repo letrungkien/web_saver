@@ -61,5 +61,5 @@ gem install "down"
 ## Save other assets
 - There are other assets like js files, fonts, videos, etc. that I could save.
 
-## Make download thread-safe
+## Make download assets faster
 - Use [concurrent-ruby](https://github.com/ruby-concurrency/concurrent-ruby) gem to handle concurrent download.

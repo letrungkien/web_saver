@@ -3,15 +3,16 @@
 require './lib/assets_downloader'
 
 class ImagesDownloader
-  def initialize(target_url, assets_directory)
+  def initialize(driver, target_url, assets_directory)
     @target_uri = URI(target_url)
     @base_downloader = AssetsDownloader.new(@target_uri)
     @assets_directory = assets_directory
+    @driver = driver
   end
 
-  def download(elements)
+  def download
     puts "Downloading images"
-    srcs = collect_srcs(elements)
+    srcs = collect_srcs
     assets_map = @base_downloader.download(@assets_directory, downloadable_srcs(srcs))
 
     { assets_map: assets_map, total_count: srcs.count }
@@ -19,7 +20,9 @@ class ImagesDownloader
 
   private
 
-  def collect_srcs(elements)
+  def collect_srcs
+    elements = @driver.find_elements(xpath: '//picture/source') + @driver.find_elements(:tag_name, 'img')
+
     [].tap do |srcs|
       elements.each do |element|
         src = element.attribute('src')

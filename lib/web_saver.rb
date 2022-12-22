@@ -97,14 +97,12 @@ class WebSaver
 
   def save_assets(url)
     assets_directory = assets_folder(url)
-    image_downloader = ImagesDownloader.new(url, assets_directory)
 
-    image_elements = driver.find_elements(xpath: '//picture/source') + driver.find_elements(:tag_name, 'img')
-    download_image_result = image_downloader.download(image_elements)
+    image_downloader = ImagesDownloader.new(driver, url, assets_directory)
+    download_image_result = image_downloader.download
 
-    css_elements = driver.find_elements(:tag_name, 'link') + driver.find_elements(:tag_name, 'style')
-    css_downloader = CSSDownloader.new(url, assets_directory)
-    download_css_result = css_downloader.download(css_elements)
+    css_downloader = CSSDownloader.new(driver, url, assets_directory)
+    download_css_result = css_downloader.download
 
     { image: download_image_result, css: download_css_result }
   end

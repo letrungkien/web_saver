@@ -44,6 +44,7 @@ ARGV.each do |url|
 rescue => e
   puts "Encounter an error: #{e}"
   puts e.backtrace
-ensure
   web_saver.quit_driver rescue nil
 end
+
+web_saver.quit_driver rescue nil
