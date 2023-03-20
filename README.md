@@ -24,8 +24,8 @@ docker-compose up chrome
 ```
 - It's ready to run
 ```
-docker-compose run --rm app https://www.google.com
-docker-compose run --rm app -m https://www.google.com
+docker-compose run --rm app ./fetch https://www.google.com
+docker-compose run --rm app ./fetch -m https://www.google.com
 ```
 
 ### Run from your machine
@@ -40,11 +40,14 @@ docker-compose run --rm app -m https://www.google.com
 ```
 gem install "selenium-webdriver"
 gem install "down"
+gem install "rspec" # for tests
 ```
 - It's ready to run
 ```
 ./fetch https://www.google.com
 ./fetch -m https://www.google.com
+
+You'll find assets and metadata in `assets/production` and `metadata/production` folders.
 ```
 # Technologies
 ## Why Ruby?
@@ -54,10 +57,6 @@ gem install "down"
 - So other tools that deal with initial static html response from server like Nokogiri won't be enough to capture the whole content. 
 
 # Improvements in the future
-## Add tests
-- I will need to write tests for it. Defintely end to end tests.
-- The test will have a website with dynamic content as a given and check if html, assets, and metadata are downloaded.
-
 ## Save other assets
 - There are other assets like js files, fonts, videos, etc. that I could save.
 

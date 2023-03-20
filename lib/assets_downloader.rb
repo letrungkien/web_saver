@@ -8,7 +8,7 @@ class AssetsDownloader
   end
 
   def download(assets_directory, srcs)
-    Dir.mkdir(assets_directory) unless File.exist?(assets_directory)
+    FileUtils.mkdir_p(assets_directory) unless File.exist?(assets_directory)
 
     srcs.each_with_object({}) do |src, assets_map|
       src_full_url = make_src_full_url(src)

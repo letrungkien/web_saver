@@ -6,7 +6,6 @@ COPY . .
 
 RUN gem install "selenium-webdriver"
 RUN gem install "down"
+RUN gem install "rspec"
 
 RUN chmod +x fetch
-
-ENTRYPOINT ["./fetch"]

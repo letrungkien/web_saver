@@ -6,6 +6,10 @@ require './lib/images_downloader'
 require './lib/css_downloader'
 
 class WebSaver
+  def initialize
+    @env = ENV['ENV'] || 'production'
+  end
+
   def fetch_webpage_and_save_assets_with_metadata(url)
     html_file_name = normalize_url_without_protocol(url)
     html_file_name << '.html' unless html_file_name.end_with?('.html')
@@ -33,7 +37,7 @@ class WebSaver
   end
 
   def fetch_metadata(url)
-    metadata_file_name = metadata_file_name(url)
+    metadata_file_name = metadata_file_name_info(url)[:file_name]
     if File.exist?(metadata_file_name)
       puts File.read(metadata_file_name)
     else
@@ -66,14 +70,17 @@ class WebSaver
     uri.to_s.gsub("#{uri.scheme}://", '').gsub('/', '_')
   end
 
-  def metadata_file_name(url)
+  def metadata_file_name_info(url)
     digest = Digest::MD5.hexdigest normalize_url_without_protocol(url)
-    "metadata/#{digest}"
+    {
+      folder: "metadata/#{@env}",
+      file_name: "metadata/#{@env}/#{digest}"
+    }
   end
 
   def assets_folder(url)
     digest = Digest::MD5.hexdigest normalize_url_without_protocol(url)
-    "assets/#{digest}"
+    "assets/#{@env}/#{digest}"
   end
 
   def fetch_html(url)
@@ -82,7 +89,7 @@ class WebSaver
   end
 
   def populate_and_save_metadata(url, image_count)
-    metadata_file_name = metadata_file_name(url)
+    metadata_file_name_info = metadata_file_name_info(url)
     content = ["site: #{url}"]
 
     num_of_links = driver.find_elements(:tag_name, 'a').count
@@ -92,7 +99,8 @@ class WebSaver
 
     content << "last_fetch: #{Time.now.utc}"
 
-    File.open(metadata_file_name, 'w') { |file| file.write content.join("\n") }
+    FileUtils.mkdir_p(metadata_file_name_info[:folder])
+    File.open(metadata_file_name_info[:file_name], 'w') { |file| file.write content.join("\n") }
   end
 
   def save_assets(url)
